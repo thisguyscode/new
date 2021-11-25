@@ -1,0 +1,9 @@
+### Specific folders
+node_modules
+build
+
+### macOS
+.DS_Store
+
+### Thumbnails
+._*

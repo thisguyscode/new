@@ -1,0 +1,39 @@
+{
+  "name": "new-plugin",
+  "version": "1.0.0",
+  "description": "new",
+  "main": "code.js",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.17.1",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "prettier": "^2.3.2",
+    "prettier-plugin-organize-imports": "^2.3.3",
+    "rollup": "^2.32.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrei-inc/Automater.git"
+  },
+  "keywords": [
+    "figma-plugin",
+    "automate",
+    "automater",
+    "auto",
+    "bulk",
+    "multiple"
+  ],
+  "author": "Andrei Iancu <andrei.i@outlook.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrei-inc/Automater/issues"
+  },
+  "homepage": "https://github.com/andrei-inc/Automater#readme"
+}

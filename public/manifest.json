@@ -1,0 +1,13 @@
+{
+  "name": "New",
+  "id": "1045657353136433238",
+  "api": "1.0.0",
+  "main": "build/code.js",
+  "editorType": ["figma"],
+  "menu": [
+    {
+      "name": "zzNew plugin",
+      "command": "test"
+    }
+  ]
+}
