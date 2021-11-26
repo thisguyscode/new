@@ -1,14 +1,13 @@
-import { allPossibleCases } from './modules/utils/array';
 import { isComponent, isInstanceWithVariants } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
-import { getVariantGroupProps } from './modules/utils/helpers/get-variant-group-props';
-import { getIndexesToInstances, getInstanceByStoredIndexes } from './modules/utils/helpers/get-variant-structure';
+import { getIndexesToInstances, getInstancesByStoredIndexes } from './modules/utils/helpers/get-variant-structure';
+import { getVariantsAllPosibleCases } from './modules/utils/helpers/get-variants-possible-cases';
 import { messages } from './modules/utils/message';
 import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 
 console.clear();
 
-const createVariant = (node: ComponentNode, properties: VariantMixin) => {
+const createVariant = (node: ComponentNode, properties: VariantMixin, instancesIndexes: number[][] = []) => {
   const { parent } = node;
 
   const newVariant = node.clone();
@@ -24,40 +23,22 @@ const initPluginAsync = async () => {
   }
 
   if (command === 'test') {
-    const instances = node.findAll(isInstanceWithVariants) as InstanceNode[];
+    const validInstances = node.findAll(isInstanceWithVariants) as InstanceNode[];
 
-    const testTwo = getIndexesToInstances(instances);
-    console.log('🚀 ~ testTwo', testTwo);
+    const indexesToInstances = getIndexesToInstances(validInstances);
 
-    const bbb = testTwo.map((item) => getInstanceByStoredIndexes(node, item));
-    console.log('🚀 ~ bbb', bbb);
+    const newInstances = getInstancesByStoredIndexes(node, indexesToInstances);
 
-    const instanceAllProps = getVariantGroupProps(instances);
-    console.log('🚀 ~ instanceAllProps', instanceAllProps);
+    const test = getVariantsAllPosibleCases(validInstances);
+    console.log('🚀 ~ test', test);
+
     debugger;
 
-    const { keys, values } = Object;
-    const instanceProps = [].concat(...instanceAllProps.map((group) => keys(group)));
-    const instanceValues = [].concat(...instanceAllProps.map((group) => values(group))).map((el) => el.values);
-
-    const allCases = allPossibleCases(instanceValues);
-
-    let counter = 0;
-
-    const groupedInstances = instances.map((instance, instanceIndex) => {
-      const props = Object.keys(instance.variantProperties);
-      const propsIndexes = props.map((key) => counter++);
-
-      return {
-        instance,
-        propsIndexes,
-      };
-    });
-
-    /* console.log('🚀 ~ variantsKeys', instanceProps);
-    console.log('🚀 ~ instanceValues', instanceValues);
-    console.log('🚀 ~ allCases', allCases);
-    console.log('🚀 ~ groupedInstances', groupedInstances); */
+    // console.log('🚀 ~ indexesToInstances', indexesToInstances);
+    // console.log('🚀 ~ variantsKeys', instanceProps);
+    // console.log('🚀 ~ instanceValues', instanceValues);
+    // console.log('🚀 ~ instancesGroupPropsLength', instancesGroupPropsLength);
+    // console.log('🚀 ~ allCases', possibleCases);
 
     closePlugin(messages().default().success);
   }

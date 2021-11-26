@@ -59,7 +59,7 @@ export const uniq = (array: any[], sort = false) => {
   ALl possible cases
   Credit: https://stackoverflow.com/questions/4331092/finding-all-combinations-cartesian-product-of-javascript-array-values
  */
-export const allPossibleCases = (arr) => {
+export const allPossibleCases = (arr): string[] => {
   if (arr.length == 1) {
     return arr[0];
   } else {
