@@ -1,3 +1,4 @@
+import { groupBy } from './modules/utils/array';
 import { isComponent, isInstanceWithVariants } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
 import { createVariant } from './modules/utils/helpers/createVariant';
@@ -9,6 +10,13 @@ import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 
 console.clear();
 
+const getValidInstancesWithVariants = (node: ComponentNode): InstanceNode[] => {
+  const instancesWithVariants = node.findAll(isInstanceWithVariants);
+  const groupByMainComponent = groupBy(instancesWithVariants, 'mainComponent');
+
+  return Object.values(groupByMainComponent).map((group) => group[0]);
+};
+
 const initPluginAsync = async () => {
   const command = figma.command;
   const node = figma.currentPage.selection[0] as ComponentNode;
@@ -18,13 +26,17 @@ const initPluginAsync = async () => {
   }
 
   if (command === 'test') {
-    const validInstances = node.findAll(isInstanceWithVariants) as InstanceNode[];
+    const validInstances = getValidInstancesWithVariants(node);
 
     const indexesToInstances = getIndexesToInstances(validInstances);
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, indexesToInstances));
+    const newSelection = allVariantsCases.map((variantCase) => {
+      const result = createVariant(node, variantCase, indexesToInstances);
+
+      return result;
+    });
 
     selectNodes(newSelection);
 
@@ -45,7 +57,9 @@ const runPlugin = async () => {
     if (error === CLOSE_PLUGIN_MSG) {
       figma.closePlugin();
     } else {
+      console.log(error);
       figma.notify(String(error), settings.notification.long);
+      debugger;
       figma.closePlugin();
       throw error;
     }

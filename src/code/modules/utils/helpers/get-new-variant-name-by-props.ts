@@ -6,7 +6,7 @@ export const getNewVariantNameByProps = (variant: ComponentNode, props: VariantP
   const newProps = []
     .concat(...props.map((prop) => Object.entries(prop)))
     .map((item) => item.join('='))
-    .join(',');
+    .join(', ');
 
-  return name + ',' + newProps;
+  return name + ', ' + newProps;
 };

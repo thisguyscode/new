@@ -10,12 +10,19 @@ export const createVariant = (
   const { parent } = node;
 
   const newVariant = node.clone();
-  parent.appendChild(newVariant);
+  newVariant.name = getNewVariantNameByProps(node, properties);
+  console.log('🚀 ~ newVariant.name', newVariant.name);
 
   const newInstances = getInstancesByStoredIndexes(newVariant, instancesIndexes);
-  newVariant.name = getNewVariantNameByProps(node, properties);
 
-  newInstances.map((instance, idx) => instance.setProperties(properties[idx]));
+  newInstances.map((instance, idx) => {
+    console.log(properties);
+    console.log(properties[idx]);
+
+    return instance.setProperties(properties[idx]);
+  });
+
+  parent.appendChild(newVariant);
 
   return newVariant;
 };

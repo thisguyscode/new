@@ -28,7 +28,9 @@ export const getIndexesToInstances = (instances: InstanceNode[]) => {
 export const getInstanceByStoredIndexes = (node: ComponentNode, indexes: number[]) => {
   let result = node as unknown;
 
-  indexes.map((index) => (result = result['children'][index]));
+  indexes.map((index) => {
+    result = result['children'][index];
+  });
 
   return result as InstanceNode;
 };
