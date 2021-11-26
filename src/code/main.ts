@@ -1,18 +1,13 @@
 import { isComponent, isInstanceWithVariants } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
-import { getIndexesToInstances, getInstancesByStoredIndexes } from './modules/utils/helpers/get-variant-structure';
+import { createVariant } from './modules/utils/helpers/createVariant';
+import { getIndexesToInstances } from './modules/utils/helpers/get-instances-by-stored-indexes';
 import { getVariantsAllPosibleCases } from './modules/utils/helpers/get-variants-possible-cases';
+import { selectNodes } from './modules/utils/helpers/select-nodes';
 import { messages } from './modules/utils/message';
 import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 
 console.clear();
-
-const createVariant = (node: ComponentNode, properties: VariantMixin, instancesIndexes: number[][] = []) => {
-  const { parent } = node;
-
-  const newVariant = node.clone();
-  parent.appendChild(newVariant);
-};
 
 const initPluginAsync = async () => {
   const command = figma.command;
@@ -27,18 +22,11 @@ const initPluginAsync = async () => {
 
     const indexesToInstances = getIndexesToInstances(validInstances);
 
-    const newInstances = getInstancesByStoredIndexes(node, indexesToInstances);
+    const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    const test = getVariantsAllPosibleCases(validInstances);
-    console.log('🚀 ~ test', test);
+    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, indexesToInstances));
 
-    debugger;
-
-    // console.log('🚀 ~ indexesToInstances', indexesToInstances);
-    // console.log('🚀 ~ variantsKeys', instanceProps);
-    // console.log('🚀 ~ instanceValues', instanceValues);
-    // console.log('🚀 ~ instancesGroupPropsLength', instancesGroupPropsLength);
-    // console.log('🚀 ~ allCases', possibleCases);
+    selectNodes(newSelection);
 
     closePlugin(messages().default().success);
   }

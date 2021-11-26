@@ -18,4 +18,5 @@ export const getVariantGroupProps = (instances: InstanceNode[]) => {
 };
 
 type customVariantGroupProperties = { [property: string]: string[] };
+export type VariantProperties = { [property: string]: string };
 type defaultVariantGroupProperties = { [property: string]: { values: string[] } };

@@ -1,5 +1,5 @@
 import { allPossibleCases } from '../array';
-import { getVariantGroupProps } from './get-variant-group-props';
+import { getVariantGroupProps, VariantProperties } from './get-variant-group-props';
 
 const fixVariantValues = (possibleCases, array: number[]) => {
   const results = possibleCases.map((possibleCases) => {
@@ -17,7 +17,7 @@ const fixVariantValues = (possibleCases, array: number[]) => {
   return results as string[][][];
 };
 
-const remapVariantProps = (propsArray: string[][], valuesArray: string[][][]) => {
+const remapVariantProps = (propsArray: string[][], valuesArray: string[][][]): VariantProperties[][] => {
   return valuesArray.map((values) => {
     return propsArray.map((props, idx) => {
       const results = {};
