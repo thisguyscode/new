@@ -1,25 +1,4 @@
 import { isComponent } from '../boolean';
-/* 
-const getNodeProps = (node) => {
-  return {
-    name: node.name,
-    type: node.type,
-    isVariant: isInstanceWithVariants(node),
-  };
-};
-
-export const getVariantStructure = (node) => {
-  const data = getNodeProps(node);
-
-  if (!node.children) {
-    return data;
-  }
-
-  data['children'] = node.children.map(getVariantStructure);
-
-  return data;
-};
- */
 
 /* This is getting the path to the instance (layer structure) */
 export const getIndexesToInstance = (
