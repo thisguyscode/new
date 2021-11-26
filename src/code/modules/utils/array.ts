@@ -54,3 +54,24 @@ export const nestGroupsBy = (arr: {}[], properties: string[]) => {
 export const uniq = (array: any[], sort = false) => {
   return isArrayEmpty(array) ? [] : !sort ? [...new Set(array)] : [...new Set(array)].sort();
 };
+
+/* 
+  ALl possible cases
+  Credit: https://stackoverflow.com/questions/4331092/finding-all-combinations-cartesian-product-of-javascript-array-values
+ */
+export const allPossibleCases = (arr) => {
+  if (arr.length == 1) {
+    return arr[0];
+  } else {
+    const result = [];
+    const allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
+
+    for (let i = 0; i < allCasesOfRest.length; i++) {
+      for (let j = 0; j < arr[0].length; j++) {
+        result.push([].concat(arr[0][j], allCasesOfRest[i]));
+      }
+    }
+
+    return result;
+  }
+};

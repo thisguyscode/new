@@ -5,7 +5,6 @@ export const isFrame = (node) => node.type === 'FRAME';
 export const isGroup = (node) => node.type === 'GROUP';
 export const isComponent = (node) => node.type === 'COMPONENT';
 export const isComponentSet = (node) => node.type === 'COMPONENT_SET';
-export const isInstance = (node) => node.type === 'INSTANCE';
 
 export const isVector = (node) => node.type === 'VECTOR';
 export const isEllipse = (node) => node.type === 'ELLIPSE';
@@ -77,3 +76,8 @@ export const hasChildren = (node) => hasChildrenProp(node) && node.children.leng
 
 //
 export const hasEffectsProp = (node) => 'effects' in node;
+
+//
+export const isInstance = (node) => node.type === 'INSTANCE';
+export const hasVariants = (node: InstanceNode) => node.variantProperties !== null;
+export const isInstanceWithVariants = (node) => isInstance(node) && hasVariants(node);

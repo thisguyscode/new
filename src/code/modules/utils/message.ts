@@ -14,7 +14,7 @@ export const getMessageProps = (nodes, compatibleNodes = nodes) => {
 
 // All messages function
 // Done like this for Autocomplete
-export const allMessages = (options) => {
+export const messages = (options?) => {
   const { counter = settings.message.counter, state = settings.message.state } = { ...options };
 
   const SPACER = '\u3164';
