@@ -1,4 +1,3 @@
-import { groupBy } from './modules/utils/array';
 import { isComponent, isInstanceWithVariants } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
 import { createVariant } from './modules/utils/helpers/createVariant';
@@ -11,10 +10,9 @@ import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 console.clear();
 
 const getValidInstancesWithVariants = (node: ComponentNode): InstanceNode[] => {
-  const instancesWithVariants = node.findAll(isInstanceWithVariants);
-  const groupByMainComponent = groupBy(instancesWithVariants, 'mainComponent');
+  const instancesWithVariants = node.findAll(isInstanceWithVariants) as InstanceNode[];
 
-  return Object.values(groupByMainComponent).map((group) => group[0]);
+  return instancesWithVariants;
 };
 
 const initPluginAsync = async () => {
@@ -32,11 +30,7 @@ const initPluginAsync = async () => {
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    const newSelection = allVariantsCases.map((variantCase) => {
-      const result = createVariant(node, variantCase, indexesToInstances);
-
-      return result;
-    });
+    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, indexesToInstances));
 
     selectNodes(newSelection);
 

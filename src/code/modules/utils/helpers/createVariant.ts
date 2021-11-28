@@ -1,4 +1,4 @@
-import { getInstancesByStoredIndexes } from './get-instances-by-stored-indexes';
+import { getInstanceByStoredIndexes } from './get-instances-by-stored-indexes';
 import { getNewVariantNameByProps } from './get-new-variant-name-by-props';
 import { VariantProperties } from './get-variant-group-props';
 
@@ -7,22 +7,30 @@ export const createVariant = (
   properties: VariantProperties[],
   instancesIndexes: number[][] = [],
 ) => {
-  const { parent } = node;
+  const isMatch = instancesIndexes.every((instanceIndex, idx) => {
+    const instance = getInstanceByStoredIndexes(node, instanceIndex);
 
-  const newVariant = node.clone();
-  newVariant.name = getNewVariantNameByProps(node, properties);
-  console.log('🚀 ~ newVariant.name', newVariant.name);
+    return JSON.stringify(instance.variantProperties) === JSON.stringify(properties[idx]);
+  });
 
-  const newInstances = getInstancesByStoredIndexes(newVariant, instancesIndexes);
+  let newVariant = node;
 
-  newInstances.map((instance, idx) => {
-    console.log(properties);
-    console.log(properties[idx]);
+  if (!isMatch) {
+    newVariant = node.clone();
+
+    node.parent.appendChild(newVariant);
+  }
+
+  console.log('🚀 ~ isMatch', isMatch);
+  // debugger;
+
+  instancesIndexes.map((instanceIndex, idx) => {
+    const instance = getInstanceByStoredIndexes(newVariant, instanceIndex);
 
     return instance.setProperties(properties[idx]);
   });
 
-  parent.appendChild(newVariant);
+  newVariant.name = getNewVariantNameByProps(node, properties);
 
   return newVariant;
 };
