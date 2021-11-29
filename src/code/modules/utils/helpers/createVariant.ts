@@ -13,16 +13,9 @@ export const createVariant = (
     return JSON.stringify(instance.variantProperties) === JSON.stringify(properties[idx]);
   });
 
-  let newVariant = node;
+  const newVariant = !isMatch ? node.clone() : node;
 
-  if (!isMatch) {
-    newVariant = node.clone();
-
-    node.parent.appendChild(newVariant);
-  }
-
-  console.log('🚀 ~ isMatch', isMatch);
-  // debugger;
+  node.parent.appendChild(newVariant);
 
   instancesIndexes.map((instanceIndex, idx) => {
     const instance = getInstanceByStoredIndexes(newVariant, instanceIndex);

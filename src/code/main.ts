@@ -10,7 +10,10 @@ import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 console.clear();
 
 const getValidInstancesWithVariants = (node: ComponentNode): InstanceNode[] => {
-  const instancesWithVariants = node.findAll(isInstanceWithVariants) as InstanceNode[];
+  const isNameValid = (name: string) => name.endsWith('--');
+  const isValidInstance = (node: SceneNode) => isInstanceWithVariants(node) && isNameValid(node.name);
+
+  const instancesWithVariants = node.findAll((node) => isValidInstance(node)) as InstanceNode[];
 
   return instancesWithVariants;
 };
@@ -53,7 +56,7 @@ const runPlugin = async () => {
     } else {
       console.log(error);
       figma.notify(String(error), settings.notification.long);
-      debugger;
+
       figma.closePlugin();
       throw error;
     }
