@@ -1,4 +1,4 @@
-import { isComponent, isInstanceWithVariants } from './modules/utils/boolean';
+import { isArrayEmpty, isComponent, isInstanceWithVariants } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
 import { createVariant } from './modules/utils/helpers/createVariant';
 import { getIndexesToInstances } from './modules/utils/helpers/get-instances-by-stored-indexes';
@@ -10,8 +10,8 @@ import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
 console.clear();
 
 const getValidInstancesWithVariants = (node: ComponentNode): InstanceNode[] => {
-  const isNameValid = (name: string) => name.endsWith('--');
-  const isValidInstance = (node: SceneNode) => isInstanceWithVariants(node) && isNameValid(node.name);
+  const isValidName = (name: string) => !name.endsWith('--');
+  const isValidInstance = (node: SceneNode) => isInstanceWithVariants(node) && isValidName(node.name);
 
   const instancesWithVariants = node.findAll((node) => isValidInstance(node)) as InstanceNode[];
 
@@ -28,6 +28,10 @@ const initPluginAsync = async () => {
 
   if (command === 'test') {
     const validInstances = getValidInstancesWithVariants(node);
+
+    if (isArrayEmpty(validInstances)) {
+      closePlugin(messages().default().info);
+    }
 
     const indexesToInstances = getIndexesToInstances(validInstances);
 
