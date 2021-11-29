@@ -1,6 +1,7 @@
-export const savedDataKeys = {
+export const dataKeys = {
   copy: 'copiedNodesIds',
   incompatible: 'incompatibleNodesIds',
+  variants: 'variants',
 };
 
 export const CLOSE_PLUGIN_MSG = '_CLOSE_PLUGIN_';

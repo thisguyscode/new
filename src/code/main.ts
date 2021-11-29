@@ -1,45 +1,80 @@
-import { isArrayEmpty, isComponent, isInstanceWithVariants } from './modules/utils/boolean';
+import { isArrayEmpty, isComponent, isComponentSet } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
 import { createVariant } from './modules/utils/helpers/createVariant';
 import { getIndexesToInstances } from './modules/utils/helpers/get-instances-by-stored-indexes';
+import { getVariantsNodes } from './modules/utils/helpers/get-variants-nodes';
 import { getVariantsAllPosibleCases } from './modules/utils/helpers/get-variants-possible-cases';
+import { loadData } from './modules/utils/helpers/load-data';
+import { saveData } from './modules/utils/helpers/save-data';
 import { selectNodes } from './modules/utils/helpers/select-nodes';
 import { messages } from './modules/utils/message';
-import { CLOSE_PLUGIN_MSG, PLUGIN_NAME, settings } from './settings';
+import { CLOSE_PLUGIN_MSG, dataKeys, PLUGIN_NAME, settings } from './settings';
 
 console.clear();
 
-const getValidInstancesWithVariants = (node: ComponentNode): InstanceNode[] => {
-  const isValidName = (name: string) => !name.endsWith('--');
-  const isValidInstance = (node: SceneNode) => isInstanceWithVariants(node) && isValidName(node.name);
+const getVariantPropsBySet = (node: ComponentSetNode) => {
+  const getPropsByNodeId = (node: ComponentNode) => {
+    return {
+      id: node.id,
+      type: node.type,
+      properties: node.variantProperties,
+    };
+  };
 
-  const instancesWithVariants = node.findAll((node) => isValidInstance(node)) as InstanceNode[];
+  const propsByNodeID = node.children.map(getPropsByNodeId);
 
-  return instancesWithVariants;
+  const getSetProps = (node) => {
+    return {
+      id: node.id,
+      type: node.type,
+      children: propsByNodeID,
+    };
+  };
+
+  return getSetProps(node);
 };
 
 const initPluginAsync = async () => {
   const command = figma.command;
-  const node = figma.currentPage.selection[0] as ComponentNode;
-
-  if (!isComponent(node)) {
-    closePlugin(messages().default().info);
-  }
 
   if (command === 'test') {
-    const validInstances = getValidInstancesWithVariants(node);
+    const node = figma.currentPage.selection[0] as ComponentNode;
+
+    if (!isComponent(node)) {
+      closePlugin(messages().default().info);
+    }
+
+    const validInstances = getVariantsNodes(node);
 
     if (isArrayEmpty(validInstances)) {
       closePlugin(messages().default().info);
     }
 
-    const indexesToInstances = getIndexesToInstances(validInstances);
+    const variantsIndexes = getIndexesToInstances(validInstances);
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, indexesToInstances));
+    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, variantsIndexes));
 
     selectNodes(newSelection);
+
+    closePlugin(messages().default().success);
+  } else if (command === 'save') {
+    const selection = figma.currentPage.selection;
+    const compatibles = selection.filter((node) => isComponentSet(node)) as ComponentSetNode[];
+
+    if (isArrayEmpty(compatibles)) {
+      closePlugin(messages().default().info);
+    }
+
+    const cache = await loadData(dataKeys.variants);
+    const compatiblesVariantProps = compatibles.map(getVariantPropsBySet);
+
+    if (isArrayEmpty(cache)) {
+      await saveData(dataKeys.variants, compatiblesVariantProps);
+
+      closePlugin(messages().default().success);
+    }
 
     closePlugin(messages().default().success);
   }

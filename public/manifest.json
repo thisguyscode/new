@@ -8,6 +8,10 @@
     {
       "name": "zzNew plugin",
       "command": "test"
+    },
+    {
+      "name": "xxSave",
+      "command": "save"
     }
   ]
 }
