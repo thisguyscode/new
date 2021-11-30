@@ -1,5 +1,7 @@
 import { VariantProperties } from './get-variant-group-props';
 
+const INHERITED_PROPS_SYMBOL = '◆ ';
+
 const convertNameToVariantProps = (string = '') => {
   const results = {};
 
@@ -22,23 +24,23 @@ const convertVariantPropsToName = (variantProps: VariantProperties) => {
   return [].concat(...joinedEntries).join(', ');
 };
 
-const addSuffixToDuplicatedProps = (array: string[]) => {
-  const props = array.map((item) => item.split('='));
-
+const addSuffixToDuplicatedProps = (array: string[][]) => {
   const propKeysBucket = [];
-  const results = props.map((prop) => {
+  const results = array.map((prop) => {
     const [key, value] = prop;
+    const modifiedKey = INHERITED_PROPS_SYMBOL + key;
 
-    if (propKeysBucket.includes(key)) {
+    if (propKeysBucket.includes(modifiedKey)) {
       const keyDuplicate = `${key}`.repeat(2);
+      const resultKey = INHERITED_PROPS_SYMBOL + keyDuplicate;
 
-      propKeysBucket.push(keyDuplicate);
+      propKeysBucket.push(resultKey);
 
-      return `${keyDuplicate}=${value}`;
+      return `${resultKey}=${value}`;
     }
 
-    propKeysBucket.push(key);
-    return `${key}=${value}`;
+    propKeysBucket.push(modifiedKey);
+    return `${modifiedKey}=${value}`;
   });
 
   return results;
@@ -46,9 +48,13 @@ const addSuffixToDuplicatedProps = (array: string[]) => {
 
 export const getNewVariantNameByProps = (variant: ComponentNode, props: VariantProperties[]) => {
   const currentVariantProperties = convertNameToVariantProps(variant.name);
+  const test = Object.keys(currentVariantProperties).filter((key) => key.startsWith(INHERITED_PROPS_SYMBOL));
+  test.map((item) => delete currentVariantProperties[item]);
 
-  const newProps = [].concat(...props.map((prop) => Object.entries(prop))).map((item) => item.join('='));
-  const fixedNewProps = addSuffixToDuplicatedProps(newProps);
+  const propsEntries: string[][] = [].concat(...props.map((prop) => Object.entries(prop)));
+
+  const fixedNewProps = addSuffixToDuplicatedProps(propsEntries);
+  // debugger;
   const newVariantProperties = convertNameToVariantProps(fixedNewProps.join(', '));
 
   const resultProps = currentVariantProperties;

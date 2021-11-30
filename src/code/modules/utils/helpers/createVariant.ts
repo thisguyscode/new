@@ -4,26 +4,40 @@ import { VariantProperties } from './get-variant-group-props';
 
 export const createVariant = (
   node: ComponentNode,
-  properties: VariantProperties[],
+  variantProperties: VariantProperties[],
   instancesIndexes: number[][] = [],
 ) => {
-  const isMatch = instancesIndexes.every((instanceIndex, idx) => {
-    const instance = getInstanceByStoredIndexes(node, instanceIndex);
-
-    return JSON.stringify(instance.variantProperties) === JSON.stringify(properties[idx]);
-  });
-
-  const newVariant = !isMatch ? node.clone() : node;
+  const newVariant = node.clone();
 
   node.parent.appendChild(newVariant);
 
   instancesIndexes.map((instanceIndex, idx) => {
     const instance = getInstanceByStoredIndexes(newVariant, instanceIndex);
 
-    return instance.setProperties(properties[idx]);
+    return instance.setProperties(variantProperties[idx]);
   });
 
-  newVariant.name = getNewVariantNameByProps(node, properties);
+  newVariant.name = getNewVariantNameByProps(node, variantProperties);
+
+  return newVariant;
+};
+
+export const updateVariant = (
+  node: ComponentNode,
+  variantProperties: VariantProperties[],
+  instancesIndexes: number[][] = [],
+) => {
+  const newVariant = node;
+
+  node.parent.appendChild(newVariant);
+
+  instancesIndexes.map((instanceIndex, idx) => {
+    const instance = getInstanceByStoredIndexes(newVariant, instanceIndex);
+
+    return instance.setProperties(variantProperties[idx]);
+  });
+
+  newVariant.name = getNewVariantNameByProps(node, variantProperties);
 
   return newVariant;
 };

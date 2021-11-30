@@ -1,7 +1,10 @@
 import { isArrayEmpty, isComponent, isComponentSet } from './modules/utils/boolean';
 import { closePlugin } from './modules/utils/helpers/close-plugin';
-import { createVariant } from './modules/utils/helpers/createVariant';
-import { getIndexesToInstances } from './modules/utils/helpers/get-instances-by-stored-indexes';
+import { createVariant, updateVariant } from './modules/utils/helpers/createVariant';
+import {
+  getIndexesToInstances,
+  getInstanceByStoredIndexes,
+} from './modules/utils/helpers/get-instances-by-stored-indexes';
 import { getVariantsNodes } from './modules/utils/helpers/get-variants-nodes';
 import { getVariantsAllPosibleCases } from './modules/utils/helpers/get-variants-possible-cases';
 import { loadData } from './modules/utils/helpers/load-data';
@@ -50,14 +53,29 @@ const initPluginAsync = async () => {
       closePlugin(messages().default().info);
     }
 
-    const variantsIndexes = getIndexesToInstances(validInstances);
+    const variantIndexes = getIndexesToInstances(validInstances);
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    const newSelection = allVariantsCases.map((variantCase) => createVariant(node, variantCase, variantsIndexes));
+    const newSelection = allVariantsCases.map((variantCase) => {
+      const match = node.parent.children.find((child: ComponentNode) =>
+        variantIndexes.every((instanceIndex, idx) => {
+          const instance = getInstanceByStoredIndexes(child, instanceIndex);
+
+          return JSON.stringify(instance.variantProperties) === JSON.stringify(variantCase[idx]);
+        }),
+      ) as ComponentNode | undefined;
+
+      // debugger;
+
+      const result = !match
+        ? createVariant(node, variantCase, variantIndexes)
+        : updateVariant(match, variantCase, variantIndexes);
+
+      return result;
+    });
 
     selectNodes(newSelection);
-
     closePlugin(messages().default().success);
   } else if (command === 'save') {
     const selection = figma.currentPage.selection;
