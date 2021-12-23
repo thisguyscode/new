@@ -1,6 +1,8 @@
 import { VariantProperties } from './get-variant-group-props';
 
-const INHERITED_PROPS_SYMBOL = '◆ ';
+const INHERITED_PROPS_SYMBOL = '◆';
+const OLD_INHERITED_PROPS_SYMBOL = '◆';
+const SPACER = ' ';
 
 const convertNameToVariantProps = (string = '') => {
   const results = {};
@@ -28,11 +30,11 @@ const addSuffixToDuplicatedProps = (array: string[][]) => {
   const propKeysBucket = [];
   const results = array.map((prop) => {
     const [key, value] = prop;
-    const modifiedKey = INHERITED_PROPS_SYMBOL + key;
+    const modifiedKey = INHERITED_PROPS_SYMBOL + SPACER + key;
 
     if (propKeysBucket.includes(modifiedKey)) {
       const keyDuplicate = `${key}`.repeat(2);
-      const resultKey = INHERITED_PROPS_SYMBOL + keyDuplicate;
+      const resultKey = INHERITED_PROPS_SYMBOL + SPACER + keyDuplicate;
 
       propKeysBucket.push(resultKey);
 
@@ -48,13 +50,17 @@ const addSuffixToDuplicatedProps = (array: string[][]) => {
 
 export const getNewVariantNameByProps = (variant: ComponentNode, props: VariantProperties[]) => {
   const currentVariantProperties = convertNameToVariantProps(variant.name);
-  const test = Object.keys(currentVariantProperties).filter((key) => key.startsWith(INHERITED_PROPS_SYMBOL));
-  test.map((item) => delete currentVariantProperties[item]);
+
+  // remove inherited props before adding new ones (avoiding duplicates)
+  const inheritedProps = Object.keys(currentVariantProperties).filter((key) => {
+    return key.startsWith(OLD_INHERITED_PROPS_SYMBOL);
+  });
+  inheritedProps.map((item) => delete currentVariantProperties[item]);
 
   const propsEntries: string[][] = [].concat(...props.map((prop) => Object.entries(prop)));
 
   const fixedNewProps = addSuffixToDuplicatedProps(propsEntries);
-  // debugger;
+
   const newVariantProperties = convertNameToVariantProps(fixedNewProps.join(', '));
 
   const resultProps = currentVariantProperties;

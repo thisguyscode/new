@@ -35,12 +35,18 @@ export const getVariantsAllPosibleCases = (instances: InstanceNode[]) => {
 
   const props = groupProps.map((group) => Object.keys(group));
   const values = [].concat(...groupProps.map((group) => Object.values(group)));
+  console.log('🚀 ~ props', props);
+  console.log('🚀 ~ values', values);
+
+  debugger;
+  return;
 
   const cases = allPossibleCases(values);
 
   const groupLength = groupProps.map((group) => Object.keys(group).length);
 
   const valuesFixed = fixVariantValues(cases, groupLength);
+  // debugger;
 
   return remapVariantProps(props, valuesFixed);
 };

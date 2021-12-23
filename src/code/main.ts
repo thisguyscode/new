@@ -57,6 +57,8 @@ const initPluginAsync = async () => {
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
+    debugger;
+    return;
     const newSelection = allVariantsCases.map((variantCase) => {
       const match = node.parent.children.find((child: ComponentNode) =>
         variantIndexes.every((instanceIndex, idx) => {
@@ -65,8 +67,6 @@ const initPluginAsync = async () => {
           return JSON.stringify(instance.variantProperties) === JSON.stringify(variantCase[idx]);
         }),
       ) as ComponentNode | undefined;
-
-      // debugger;
 
       const result = !match
         ? createVariant(node, variantCase, variantIndexes)
