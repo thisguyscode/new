@@ -38,8 +38,8 @@ export const getVariantsAllPosibleCases = (instances: InstanceNode[]) => {
   console.log('🚀 ~ props', props);
   console.log('🚀 ~ values', values);
 
-  debugger;
-  return;
+  // debugger;
+  // return;
 
   const cases = allPossibleCases(values);
 

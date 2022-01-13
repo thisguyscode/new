@@ -57,8 +57,6 @@ const initPluginAsync = async () => {
 
     const allVariantsCases = getVariantsAllPosibleCases(validInstances);
 
-    debugger;
-    return;
     const newSelection = allVariantsCases.map((variantCase) => {
       const match = node.parent.children.find((child: ComponentNode) =>
         variantIndexes.every((instanceIndex, idx) => {
